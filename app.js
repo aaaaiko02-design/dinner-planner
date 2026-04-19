@@ -282,6 +282,50 @@ function initModal() {
   modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
 }
 
+let customItems = JSON.parse(localStorage.getItem('customItems') || '[]');
+let customIdCounter = 0;
+
+function saveCustomItems() {
+  localStorage.setItem('customItems', JSON.stringify(customItems));
+}
+
+function addCustomItemRow(text, index) {
+  const container = document.getElementById('custom-list');
+  const id = 'custom-' + customIdCounter++;
+  const div = document.createElement('div');
+  div.className = 'shopping-item custom-item';
+  div.innerHTML = '<input type="checkbox" id="' + id + '"><label for="' + id + '"><span class="item-name">' + text + '</span></label><button class="delete-item" aria-label="削除">✕</button>';
+  div.querySelector('input').addEventListener('change', function(e) {
+    div.classList.toggle('checked', e.target.checked);
+  });
+  div.querySelector('.delete-item').addEventListener('click', function() {
+    const i = customItems.indexOf(text);
+    if (i !== -1) customItems.splice(i, 1);
+    saveCustomItems();
+    div.remove();
+  });
+  container.appendChild(div);
+}
+
+function initCustomItems() {
+  customItems.forEach(text => addCustomItemRow(text));
+
+  const input = document.getElementById('custom-item-input');
+  const btn = document.getElementById('custom-item-btn');
+
+  function addItem() {
+    const text = input.value.trim();
+    if (!text) return;
+    customItems.push(text);
+    saveCustomItems();
+    addCustomItemRow(text);
+    input.value = '';
+  }
+
+  btn.addEventListener('click', addItem);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') addItem(); });
+}
+
 function init() {
   const weekIndex = getCurrentWeekIndex();
   const week = WEEKS[weekIndex];
@@ -291,6 +335,7 @@ function init() {
   renderShoppingList(week);
   initTabs();
   initModal();
+  initCustomItems();
 }
 
 init();
