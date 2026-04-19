@@ -202,15 +202,16 @@ function formatAmount(item) {
   return amt + item.unit;
 }
 
+// レシピモーダルを表示
 function showRecipe(dayData) {
   const modal = document.getElementById('recipe-modal');
   document.getElementById('modal-title').textContent = dayData.dish;
 
   const stepsList = document.getElementById('modal-steps');
   stepsList.innerHTML = '';
-  dayData.steps.forEach((step) => {
+  dayData.steps.forEach((step, i) => {
     const li = document.createElement('li');
-    li.textContent = step;
+    li.innerHTML = '<span class="step-num">' + (i + 1) + '</span><span>' + step + '</span>';
     stepsList.appendChild(li);
   });
 
@@ -218,7 +219,7 @@ function showRecipe(dayData) {
   ingList.innerHTML = '';
   dayData.ingredients.forEach(ing => {
     const li = document.createElement('li');
-    li.innerHTML = '<span>' + ing.name + '</span><span>' + formatAmount(ing) + '</span>';
+    li.innerHTML = '<span>' + ing.name + '</span><span class="ing-amount">' + formatAmount(ing) + '</span>';
     ingList.appendChild(li);
   });
 
