@@ -175,6 +175,55 @@ header h1 {
   text-decoration: line-through;
 }
 
+/* Add item section */
+.add-item-section {
+  padding: 12px 20px;
+  border-bottom: 1px solid #fdf6aa;
+}
+
+.add-item-row {
+  display: flex;
+  gap: 8px;
+}
+
+.add-item-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1.5px solid #f0e97a;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #fffef5;
+  color: #3d3000;
+  outline: none;
+}
+
+.add-item-input:focus {
+  border-color: #f5c800;
+}
+
+.add-item-btn {
+  padding: 8px 16px;
+  background: #f5c800;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #3d2a00;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.delete-item {
+  background: none;
+  border: none;
+  color: #cdb96a;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0 4px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 /* Recipe hint arrow */
 .recipe-hint {
   margin-left: auto;
