@@ -12,20 +12,40 @@
       <h1>夕飯献立</h1>
       <p id="week-label"></p>
     </header>
+
     <nav class="tabs">
       <button class="tab-btn active" data-tab="menu">📅 今週の献立</button>
       <button class="tab-btn" data-tab="shopping">🛒 買い物リスト</button>
     </nav>
+
     <main>
       <section id="menu-tab" class="tab-content active">
         <ul id="menu-list"></ul>
       </section>
+
       <section id="shopping-tab" class="tab-content">
         <p class="shopping-note">チェックしながら買い物しよう！</p>
         <div id="shopping-list"></div>
       </section>
     </main>
   </div>
+
+  <!-- Recipe Modal -->
+  <div id="recipe-modal" class="modal-overlay">
+    <div class="modal-box">
+      <button id="modal-close" class="modal-close">✕</button>
+      <h2 id="modal-title" class="modal-title"></h2>
+      <div class="modal-section">
+        <h3 class="modal-section-title">作り方</h3>
+        <ol id="modal-steps" class="modal-steps"></ol>
+      </div>
+      <div class="modal-section">
+        <h3 class="modal-section-title">材料（1人分）</h3>
+        <ul id="modal-ingredients" class="modal-ingredients"></ul>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>
