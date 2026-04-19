@@ -83,6 +83,7 @@ header h1 {
   gap: 14px;
   padding: 14px 20px;
   border-bottom: 1px solid #fdf6aa;
+  cursor: pointer;
 }
 
 .day-label {
@@ -173,4 +174,128 @@ header h1 {
 .shopping-item.checked label span {
   color: #cdb96a;
   text-decoration: line-through;
+}
+
+/* Recipe hint arrow */
+.recipe-hint {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: #c8a000;
+}
+
+/* Modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 100;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-box {
+  background: #fffef5;
+  border-radius: 18px 18px 0 0;
+  width: 100%;
+  max-width: 480px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 24px 20px 40px;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #ffe97a;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: #5a4500;
+  line-height: 1;
+}
+
+.modal-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #5a4500;
+  margin-bottom: 20px;
+  padding-right: 40px;
+}
+
+.modal-section {
+  margin-bottom: 20px;
+}
+
+.modal-section-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #a08030;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #fdf6aa;
+}
+
+.modal-steps {
+  list-style: none;
+  counter-reset: step;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-steps li {
+  counter-increment: step;
+  display: flex;
+  gap: 12px;
+  font-size: 0.95rem;
+  color: #3d3000;
+  line-height: 1.5;
+}
+
+.modal-steps li::before {
+  content: counter(step);
+  background: #f5c800;
+  color: #3d2a00;
+  font-weight: 700;
+  font-size: 0.75rem;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.modal-ingredients {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.modal-ingredients li {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #fdf6aa;
+  font-size: 0.9rem;
+  color: #3d3000;
+}
+
+.modal-ingredients li span:last-child {
+  color: #a08030;
 }
