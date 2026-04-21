@@ -9,7 +9,10 @@
 <body>
   <div id="app">
     <header>
-      <h1>夕飯献立</h1>
+      <div class="header-top">
+        <h1>夕飯献立</h1>
+        <button id="gcal-sync-btn" class="gcal-btn" disabled>📅 同期</button>
+      </div>
       <p id="week-label"></p>
     </header>
 
@@ -53,6 +56,7 @@
     </div>
   </div>
 
-  <script src="app.js?v=4"></script>
+  <script src="https://accounts.google.com/gsi/client" onload="gisLoaded()" async defer></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>
