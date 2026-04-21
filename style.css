@@ -25,10 +25,32 @@ header {
   background: #fff9c4;
 }
 
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 header h1 {
   font-size: 1.4rem;
   font-weight: 700;
   color: #5a4500;
+}
+
+.gcal-btn {
+  padding: 6px 12px;
+  background: #f5c800;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #3d2a00;
+  cursor: pointer;
+}
+
+.gcal-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 #week-label {
