@@ -224,6 +224,21 @@ header h1 {
   flex-shrink: 0;
 }
 
+/* Night shift */
+#menu-list li.night-shift {
+  opacity: 0.5;
+}
+
+.day-label.night {
+  background: #c8c8c8;
+  color: #666;
+}
+
+#menu-list li.night-shift .dish-name {
+  color: #999;
+  font-style: italic;
+}
+
 /* Recipe hint arrow */
 .recipe-hint {
   margin-left: auto;
