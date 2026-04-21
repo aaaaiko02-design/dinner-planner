@@ -179,15 +179,22 @@ function getCurrentWeekIndex() {
   return Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000)) % WEEKS.length;
 }
 
+let nightShiftDays = new Set(JSON.parse(localStorage.getItem('nightShift_' + (Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000)) % 4)) || '[]'));
+
+function saveNightShift(weekIndex) {
+  localStorage.setItem('nightShift_' + weekIndex, JSON.stringify([...nightShiftDays]));
+}
+
 function buildShoppingList(week) {
   const map = {};
-  for (const day of week.days) {
+  week.days.forEach((day, i) => {
+    if (nightShiftDays.has(i)) return;
     for (const ing of day.ingredients) {
       const key = ing.name + '__' + ing.unit + '__' + ing.cat;
       if (map[key]) { if (ing.unit !== '適量') map[key].amount += ing.amount; }
       else map[key] = { name: ing.name, amount: ing.amount, unit: ing.unit, cat: ing.cat };
     }
-  }
+  });
   const byCategory = {};
   for (const item of Object.values(map)) {
     if (!byCategory[item.cat]) byCategory[item.cat] = [];
@@ -226,14 +233,36 @@ function showRecipe(dayData) {
   modal.classList.add('active');
 }
 
-function renderMenu(week) {
+function renderMenu(week, weekIndex) {
   const list = document.getElementById('menu-list');
   list.innerHTML = '';
   week.days.forEach((d, i) => {
     const li = document.createElement('li');
     const isToday = i === todayIndex;
-    li.innerHTML = '<span class="day-label' + (isToday ? ' today' : '') + '">' + d.day + '</span><span class="dish-name">' + d.dish + '</span><span class="recipe-hint">▶</span>' + (isToday ? '<span class="today-badge">今日</span>' : '');
-    li.addEventListener('click', () => showRecipe(d));
+    const isNight = nightShiftDays.has(i);
+    li.className = isNight ? 'night-shift' : '';
+    li.innerHTML =
+      '<span class="day-label' + (isToday ? ' today' : '') + (isNight ? ' night' : '') + '">' + d.day + '</span>' +
+      '<span class="dish-name">' + (isNight ? '夜勤' : d.dish) + '</span>' +
+      (isNight ? '' : '<span class="recipe-hint">▶</span>') +
+      (isToday ? '<span class="today-badge">今日</span>' : '');
+
+    // タップでレシピ表示（夜勤でない場合）
+    li.addEventListener('click', (e) => {
+      if (e.target.classList.contains('day-label')) return;
+      if (!isNight) showRecipe(d);
+    });
+
+    // 曜日ラベルタップで夜勤トグル
+    li.querySelector('.day-label').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (nightShiftDays.has(i)) nightShiftDays.delete(i);
+      else nightShiftDays.add(i);
+      saveNightShift(weekIndex);
+      renderMenu(week, weekIndex);
+      renderShoppingList(week);
+    });
+
     list.appendChild(li);
   });
 }
@@ -331,7 +360,7 @@ function init() {
   const week = WEEKS[weekIndex];
   document.getElementById('week-label').textContent = week.label + 'のメニュー';
   document.title = '夕飯献立 - ' + week.label;
-  renderMenu(week);
+  renderMenu(week, weekIndex);
   renderShoppingList(week);
   initTabs();
   initModal();
