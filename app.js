@@ -1,3 +1,79 @@
+// ★ここにOAuthクライアントIDを貼り付ける
+const GOOGLE_CLIENT_ID = '254150872761-ttngrtfc8vd0rae8mlq1hjb2hbtqf578.apps.googleusercontent.com';
+
+// Google Calendar連携
+let tokenClient;
+let accessToken = null;
+
+function gisLoaded() {
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_CLIENT_ID,
+    scope: 'https://www.googleapis.com/auth/calendar.readonly',
+    callback: function(resp) {
+      if (resp.error) { console.error(resp); return; }
+      accessToken = resp.access_token;
+      syncFromGoogleCalendar();
+    },
+  });
+  const btn = document.getElementById('gcal-sync-btn');
+  if (btn) btn.disabled = false;
+}
+
+async function syncFromGoogleCalendar() {
+  const btn = document.getElementById('gcal-sync-btn');
+  btn.textContent = '同期中…';
+  btn.disabled = true;
+
+  // 今週の月曜〜日曜を計算
+  const now = new Date();
+  const dow = now.getDay();
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - (dow === 0 ? 6 : dow - 1));
+  monday.setHours(0, 0, 0, 0);
+  const nextMonday = new Date(monday);
+  nextMonday.setDate(monday.getDate() + 7);
+
+  try {
+    const params = new URLSearchParams({
+      timeMin: monday.toISOString(),
+      timeMax: nextMonday.toISOString(),
+      singleEvents: 'true',
+      orderBy: 'startTime',
+    });
+    const resp = await fetch(
+      'https://www.googleapis.com/calendar/v3/calendars/primary/events?' + params,
+      { headers: { Authorization: 'Bearer ' + accessToken } }
+    );
+    const data = await resp.json();
+    if (!resp.ok) throw new Error((data.error && data.error.message) || resp.status);
+
+    const weekIndex = getCurrentWeekIndex();
+    nightShiftDays = new Set();
+    (data.items || []).forEach(function(event) {
+      const title = event.summary || '';
+      if (title.includes('夜勤')) {
+        const dateStr = event.start.dateTime || event.start.date;
+        const d = new Date(dateStr);
+        const wd = d.getDay();
+        const idx = wd === 0 ? 6 : wd - 1; // 月=0 … 日=6
+        nightShiftDays.add(idx);
+      }
+    });
+
+    saveNightShift(weekIndex);
+    const week = WEEKS[weekIndex];
+    renderMenu(week, weekIndex);
+    renderShoppingList(week);
+
+    btn.textContent = '✓ 同期完了';
+    setTimeout(function() { btn.textContent = '📅 同期'; btn.disabled = false; }, 2000);
+  } catch (err) {
+    console.error(err);
+    btn.textContent = 'エラー';
+    setTimeout(function() { btn.textContent = '📅 同期'; btn.disabled = false; }, 2000);
+  }
+}
+
 // カテゴリ定数
 const CAT = {
   MEAT: "肉・魚",
@@ -365,6 +441,11 @@ function init() {
   initTabs();
   initModal();
   initCustomItems();
+  const syncBtn = document.getElementById('gcal-sync-btn');
+  if (syncBtn) syncBtn.addEventListener('click', function() {
+    if (!tokenClient) return;
+    tokenClient.requestAccessToken({ prompt: accessToken ? '' : 'consent' });
+  });
 }
 
 init();
